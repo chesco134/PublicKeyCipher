@@ -21,6 +21,11 @@ public class PublicCipherTest {
 		}
 		try{
 			PublicEncryption secure = new PublicEncryption();
+			// to encrypt a file
+			secure.makeKey();
+			// The first argument indicates the name of the public key. The
+			// output der file is named "public" and contains the aes key.
+			secure.saveKey(new File(args[0]), new File("public.der"));
 			System.out.println("Hemos guardado la llave de " + secure.encodedPublicKey.length + " bytes\n");
 			byte[] barr = new byte[1024];
 			DataInputStream entrada = new DataInputStream(new FileInputStream(new File(args[1])));
@@ -28,12 +33,17 @@ public class PublicCipherTest {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			while((length = entrada.read(barr)) != -1)
 				baos.write(barr, 0, length);
-			byte[] cipheredBytes = baos.toByteArray();
+			byte[] toCipher = baos.toByteArray();
 			baos.close();
 			entrada.close();
+			baos = new ByteArrayOutputStream();
+			secure.encrypt(toCipher, baos);
+			byte[] cipheredBytes = baos.toByteArray();
+			baos.close();
 			// Following code writes the cipher data to a file named by the third argument.
 			DataOutputStream salida = new DataOutputStream(new FileOutputStream(new File(args[2])));
 			salida.write(cipheredBytes);
+			System.out.println("We've output " + cipheredBytes.length + " bytes.");
 			salida.close();
 		}catch(IOException e){
 			e.printStackTrace();

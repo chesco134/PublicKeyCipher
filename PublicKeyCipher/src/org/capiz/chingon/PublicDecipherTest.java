@@ -23,7 +23,6 @@ public class PublicDecipherTest {
 			PublicEncryption secure = new PublicEncryption();
 			// The first argument contains the aes key.
 			secure.loadKey(new File(args[0]), new File("private.der"));
-			ByteArrayOutputStream recuperado = new ByteArrayOutputStream();
 			DataInputStream entrada = new DataInputStream(new FileInputStream(new File(args[1])));
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			int length;
@@ -33,6 +32,8 @@ public class PublicDecipherTest {
 			byte[] cipheredBytes = baos.toByteArray();
 			baos.close();
 			entrada.close();
+			System.out.println("We've input " + cipheredBytes.length + " bytes.");
+			ByteArrayOutputStream recuperado = new ByteArrayOutputStream();
 			secure.decrypt(new ByteArrayInputStream(cipheredBytes), recuperado);
 			DataOutputStream salida = new DataOutputStream(new FileOutputStream(new File(args[2])));
 			salida.write(recuperado.toByteArray());
